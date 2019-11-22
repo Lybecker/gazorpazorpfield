@@ -1,0 +1,35 @@
+
+variables:
+  buildConfiguration: 'Release'
+  buildProjects: '**/*.csproj'
+  testProjects: 'test/**/*[Tt]ests/*.csproj'
+  testLogger: 'xunit'
+  testAdapterPath: '.'
+
+steps:
+- task: UseDotNet@2
+  displayName: 'Set up .NET Core 3.0'
+  inputs:
+    packageType: sdk
+    version: 3.0
+    
+- task: DotNetCoreCLI@2
+  displayName: 'Restore packages'
+  inputs: 
+    command: restore
+    projects: ${buildProjects}
+
+- task: DotNetCoreCLI@2
+  displayName: 'Build projects'
+  inputs: 
+    command: 'build'
+    projects: ${buildProjects}
+    arguments: '--configuration ${buildConfiguration} --no-restore'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Run tests'
+  inputs:
+    command: 'test'
+    projects: ${testProjects}
+    arguments: '--no-build --configuration ${buildConfiguration} --logger:${testLogger} --test-adapter-path:${testAdapterPath}'
+    publishTestResults: true
