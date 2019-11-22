@@ -1,0 +1,20 @@
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.0-buster-slim AS base
+WORKDIR /app
+ENV ASPNETCORE_URLS http://+:5000
+EXPOSE 5000
+
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0-buster AS build
+WORKDIR /
+COPY ["*", "CentralFiniteCurve.Gazorpazorpfield/"]
+RUN dotnet restore "CentralFiniteCurve.Gazorpazorpfield/CentralFiniteCurve.Gazorpazorpfield.API.csproj"
+COPY . .
+WORKDIR "/CentralFiniteCurve.Gazorpazorpfield"
+RUN dotnet build "CentralFiniteCurve.Gazorpazorpfield.API.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "CentralFiniteCurve.Gazorpazorpfield.API.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "CentralFiniteCurve.Gazorpazorpfield.API.dll"]
