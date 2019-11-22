@@ -11,7 +11,7 @@ steps:
   displayName: 'Set up .NET Core 3.0'
   inputs:
     packageType: sdk
-    version: 3.0
+    version: 3.0.x
     
 - task: DotNetCoreCLI@2
   displayName: 'Restore packages'
