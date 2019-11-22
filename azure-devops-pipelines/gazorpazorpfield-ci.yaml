@@ -12,12 +12,13 @@ steps:
   inputs:
     packageType: sdk
     version: 3.0.x
-    
+
 - task: DotNetCoreCLI@2
   displayName: 'Restore packages'
   inputs: 
-    command: restore
+    command: 'restore'
     projects: ${buildProjects}
+    feedsToUse: 'select'
 
 - task: DotNetCoreCLI@2
   displayName: 'Build projects'
