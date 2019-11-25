@@ -1,15 +1,10 @@
 
 variables:
-  - name: buildConfiguration
-    value: 'Release'
-  - name: buildProjects
-    value: '**/*.csproj'
-  - name: testProjects
-    value: '**/*[Tt]ests/*.csproj'
-  - name: testLogger
-    value: 'xunit'
-  - name: testAdapterPath
-    value: '.'
+  buildConfiguration: 'Release'
+  buildProjects: '**/*.csproj'
+  testProjects: '**/*[Tt]ests/*.csproj'
+  testLogger: 'xunit'
+  testAdapterPath: '.'
 
 steps:
 - task: UseDotNet@2
@@ -19,30 +14,23 @@ steps:
     version: 3.0.x
 
 - task: DotNetCoreCLI@2
-  displayName: 'Restore packges (with fixed projects value)'
-  inputs:
-    command: 'restore'
-    projects: '**/*.csproj'
-    feedsToUse: 'select'
-
-- task: DotNetCoreCLI@2
-  displayName: 'Restore packages (with variable for projects value)'
+  displayName: 'Restore packages'
   inputs: 
     command: 'restore'
-    projects: ${{variables.buildProjects}}
+    projects: '$(buildProjects)'
     feedsToUse: 'select'
 
 - task: DotNetCoreCLI@2
   displayName: 'Build projects'
   inputs: 
     command: 'build'
-    projects: ${buildProjects}
-    arguments: '--configuration ${buildConfiguration} --no-restore'
+    projects: '$(buildProjects)'
+    arguments: '--configuration $(buildConfiguration) --no-restore'
 
 - task: DotNetCoreCLI@2
   displayName: 'Run tests'
   inputs:
     command: 'test'
-    projects: ${testProjects}
-    arguments: '--no-build --configuration ${buildConfiguration} --logger:${testLogger} --test-adapter-path:${testAdapterPath}'
+    projects: '$(testProjects)'
+    arguments: '--no-build --configuration $(buildConfiguration) --logger:$(testLogger) --test-adapter-path:$(testAdapterPath)'
     publishTestResults: true
