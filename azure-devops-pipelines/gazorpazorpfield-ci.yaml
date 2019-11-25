@@ -29,7 +29,7 @@ steps:
   displayName: 'Restore packages (with variable for projects value)'
   inputs: 
     command: 'restore'
-    projects: ${buildProjects}
+    projects: ${{variables.buildProjects}}
     feedsToUse: 'select'
 
 - task: DotNetCoreCLI@2
