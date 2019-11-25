@@ -36,7 +36,7 @@ steps:
   displayName: 'Restore packages (with variable for projects value)'
   inputs: 
     command: 'restore'
-    projects: ${buildProjects}
+    projects: '${buildProjects}'
     feedsToUse: 'select'
 
 - task: NuGetToolInstaller@1
