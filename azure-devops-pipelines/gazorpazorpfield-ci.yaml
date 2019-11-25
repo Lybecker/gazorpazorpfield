@@ -19,14 +19,14 @@ steps:
     version: 3.0.x
 
 - task: DotNetCoreCLI@2
-  displayName: 'Why the f is this not working???'
+  displayName: 'Restore packges (with fixed projects value)'
   inputs:
     command: 'restore'
     projects: '**/*.csproj'
     feedsToUse: 'select'
 
 - task: DotNetCoreCLI@2
-  displayName: 'Restore packages'
+  displayName: 'Restore packages (with variable for projects value)'
   inputs: 
     command: 'restore'
     projects: ${buildProjects}
