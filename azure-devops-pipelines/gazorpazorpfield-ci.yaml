@@ -1,10 +1,15 @@
 
 variables:
-  buildConfiguration: 'Release'
-  buildProjects: '**/*/*.csproj'
-  testProjects: '**/*[Tt]ests/*.csproj'
-  testLogger: 'xunit'
-  testAdapterPath: '.'
+  - name: buildConfiguration
+    value: 'Release'
+  - name: buildProjects
+    value: '**/*.csproj'
+  - name: testProjects
+    value: '**/*[Tt]ests/*.csproj'
+  - name: testLogger
+    value: 'xunit'
+  - name: testAdapterPath
+    value: '.'
 
 steps:
 - task: UseDotNet@2
