@@ -5,6 +5,12 @@ variables:
   testProjects: '**/*[Tt]ests/*.csproj'
   testLogger: xunit
   testAdapterPath: .
+  publishProjects: 'src/CentralFiniteCurve.Gazorpazorpfield.API/CentralFiniteCurve.Gazorpazorpfield.API.csproj'
+  publishOutput: $(Build.ArtifactStagingDirectory)
+  dockerfilesSourceFolder: '$(Build.SourcesDirectory)/src/'
+  dockerfilesTargetFolder: '$(Build.ArtifactStagingDirectory)/CentralFiniteCurve.Gazorpazorpfield.API'
+  publishFolder: $(Build.ArtifactStagingDirectory)
+  artifactName: 'drop'
 
 steps:
 - task: UseDotNet@2
@@ -34,3 +40,26 @@ steps:
     projects: '$(testProjects)'
     arguments: '--no-build --configuration $(buildConfiguration) --logger:$(testLogger) --test-adapter-path:$(testAdapterPath)'
     publishTestResults: true
+
+- task: DotNetCoreCLI@2
+  displayName: 'Publish'
+  inputs:
+    command: 'publish'
+    publishWebProjects: false
+    projects: '$(publishProjects)'
+    arguments: '--configuration $(buildConfiguration) --no-build --output $(publishOutput)'
+    zipAfterPublish: false
+
+- task: CopyFiles@2
+  displayName: 'Copy Docker files to Build Artifacts'
+  inputs:
+    SourceFolder: '$(dockerfilesSourceFolder)'
+    Contents: |
+      Dockerfile.AzureDevOps
+      .dockerignore
+    TargetFolder: '$(dockerfilesTargetFolder)'
+
+- publish: '$(publishFolder)'
+  displayName: 'Publish Build Artifacts'
+  artifact: '$(artifactName)'
+  condition: succeededOrFailed()
