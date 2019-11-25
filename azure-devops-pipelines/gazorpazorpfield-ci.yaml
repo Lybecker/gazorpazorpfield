@@ -1,7 +1,7 @@
 
 variables:
   buildConfiguration: 'Release'
-  buildProjects: '**/*.csproj'
+  buildProjects: '**/*/*.csproj'
   testProjects: '**/*[Tt]ests/*.csproj'
   testLogger: 'xunit'
   testAdapterPath: '.'
