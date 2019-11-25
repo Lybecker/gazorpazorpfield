@@ -3,7 +3,7 @@ variables:
   buildConfiguration: 'Release'
   buildProjects: '**/*.csproj'
   testProjects: '**/*[Tt]ests/*.csproj'
-  testLogger: 'xunit'
+  testLogger: 'XunitXml.TestLogger'
   testAdapterPath: '.'
 
 steps:
