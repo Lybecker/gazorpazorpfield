@@ -14,6 +14,13 @@ steps:
     version: 3.0.x
 
 - task: DotNetCoreCLI@2
+  displayName: 'Why the f is this not working???'
+  inputs:
+    command: 'restore'
+    projects: '**/*.csproj'
+    feedsToUse: 'select'
+
+- task: DotNetCoreCLI@2
   displayName: 'Restore packages'
   inputs: 
     command: 'restore'
