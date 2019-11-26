@@ -19,7 +19,7 @@ variables:
   azureContainerRegistryRepositoryName: 'test' # TODO: Fill the value before use
 
 stages:
-- stage: Gazorpazorpfield-CI
+- stage: GazorpazorpfieldCI
   displayName: 'CentralFiniteCurve.Gazorpazorpfield CI'
   jobs:
   - job: BuildAndTestSolutionAndPublishBuildArtifacts
