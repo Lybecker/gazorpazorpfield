@@ -1,36 +1,104 @@
 
 variables:
+  apiProjectName: 'CentralFiniteCurve.Gazorpazorpfield.API'
   buildConfiguration: 'Release'
   buildProjects: '**/*.csproj'
   testProjects: '**/*[Tt]ests/*.csproj'
-  testLogger: 'XunitXml.TestLogger'
+  testLogger: 'xunit'
   testAdapterPath: '.'
+  publishProjects: 'src/$(apiProjectName)/$(apiProjectName).csproj'
+  publishOutput: $(Build.ArtifactStagingDirectory)
+  publishFolder: $(Build.ArtifactStagingDirectory)
+  artifactName: 'drop'
+  dockerfileName: 'Dockerfile.AzureDevOps'
+  dockerfilesSourceFolder: '$(Build.SourcesDirectory)/src/'
+  dockerBuildContext: '$(Pipeline.Workspace)/$(artifactName)/$(apiProjectName)/'
+  dockerImageName: 'CentralFiniteCurve.Gazorpazorpfield' # TODO: Review this value before use
+  dockerImageTag: '$(Build.BuildId)'
+  azureContainerRegistryServiceConnectionName: 'sakunducr' # TODO: Fill the value before use
+  azureContainerRegistryRepositoryName: 'test' # TODO: Fill the value before use
 
-steps:
-- task: UseDotNet@2
-  displayName: 'Set up .NET Core 3.0'
-  inputs:
-    packageType: sdk
-    version: 3.0.x
+stages:
+- stage: CentralFiniteCurve.Gazorpazorpfield-CI
+  displayName: 'CentralFiniteCurve.Gazorpazorpfield CI'
+  jobs:
+  - job: BuildAndTestSolutionAndPublishBuildArtifacts
+    displayName: 'Build and test the solution, publish build artifacts'
+    steps:
+    - task: UseDotNet@2
+      displayName: 'Set up .NET Core 3.0'
+      inputs:
+        packageType: sdk
+        version: 3.0.x
 
-- task: DotNetCoreCLI@2
-  displayName: 'Restore packages'
-  inputs: 
-    command: 'restore'
-    projects: '$(buildProjects)'
-    feedsToUse: 'select'
+    - task: DotNetCoreCLI@2
+      displayName: 'Restore packages'
+      inputs: 
+        command: 'restore'
+        projects: '$(buildProjects)'
+        feedsToUse: 'select'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Build projects'
-  inputs: 
-    command: 'build'
-    projects: '$(buildProjects)'
-    arguments: '--configuration $(buildConfiguration) --no-restore'
+    - task: DotNetCoreCLI@2
+      displayName: 'Build projects'
+      inputs: 
+        command: 'build'
+        projects: '$(buildProjects)'
+        arguments: '--configuration $(buildConfiguration) --no-restore'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Run tests'
-  inputs:
-    command: 'test'
-    projects: '$(testProjects)'
-    arguments: '--no-build --configuration $(buildConfiguration) --logger:$(testLogger) --test-adapter-path:$(testAdapterPath)'
-    publishTestResults: true
+    - task: DotNetCoreCLI@2
+      displayName: 'Run tests'
+      inputs:
+        command: 'test'
+        projects: '$(testProjects)'
+        arguments: '--no-build --configuration $(buildConfiguration) --logger:$(testLogger) --test-adapter-path:$(testAdapterPath)'
+        publishTestResults: true
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish'
+      inputs:
+        command: 'publish'
+        publishWebProjects: false
+        projects: '$(publishProjects)'
+        arguments: '--configuration $(buildConfiguration) --no-build --output $(publishOutput)'
+        zipAfterPublish: false
+
+    - task: CopyFiles@2
+      displayName: 'Copy Docker file to build artifacts'
+      inputs:
+        SourceFolder: '$(dockerfilesSourceFolder)'
+        Contents: |
+          $(dockerfileName)
+          .dockerignore
+        TargetFolder: '$(Build.ArtifactStagingDirectory)/$(apiProjectName)'
+
+    - publish: '$(publishFolder)'
+      displayName: 'Publish build artifacts'
+      artifact: '$(artifactName)'
+      condition: succeededOrFailed()
+
+  - job: BuildAndPushDockerImage
+    displayName: 'Build Docker image and push to container registry'
+    dependsOn: BuildAndTestSolutionAndPublishBuildArtifacts
+    condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/master'), neq('$(azureContainerRegistryServiceConnectionName)', ''), neq('$(azureContainerRegistryRepositoryName)', '')) # Execute, if in master branch and ACR variables defined
+    steps:
+    - download: current
+      displayName: 'Download build artifacts'
+      artifact: '$(artifactName)'
+      patterns: '**/*'
+
+    - task: Docker@2
+      displayName: 'Login to Azure Container Registry (ACR)'
+      inputs:
+        containerRegistry: '$(azureContainerRegistryServiceConnectionName)'
+        command: 'login'
+        addPipelineData: false
+
+    - task: Docker@2
+      displayName: 'Build Docker image and push to ACR'
+      inputs:
+        command: 'buildAndPush'
+        repository: '$(azureContainerRegistryRepositoryName)/$(dockerImageName)'
+        dockerfile: '$(dockerBuildContext)$(dockerfileName)'
+        buildContext: '$(dockerBuildContext)'
+        tags: '$(dockerImageTag)'
+        addPipelineData: false
