@@ -15,7 +15,7 @@ variables:
   dockerBuildContext: '$(Pipeline.Workspace)/$(artifactName)/$(apiProjectName)/'
   dockerImageName: 'CentralFiniteCurve.Gazorpazorpfield' # TODO: Review this value before use
   dockerImageTag: '$(Build.BuildId)'
-  azureContainerRegistryServiceConnectionName: 'sakunduacr' # TODO: Fill the value before use
+  azureContainerRegistryServiceConnectionName: 'sakunducr' # TODO: Fill the value before use
   azureContainerRegistryRepositoryName: 'test' # TODO: Fill the value before use
 
 stages:
