@@ -22,8 +22,8 @@ variables:
 
   # TODO: Fill the values of the following variables before use!
   # If you choose not to build/push a Docker image, remove or comment out the BuildAndPushDockerImage job
-  dockerContainerRegistryServiceConnectionName: '' # TODO: Fill the value before use
-  dockerContainerRegistryRepositoryName: '' # TODO: Fill the value before use
+  dockerContainerRegistryServiceConnectionName: 'sakunducr' # TODO: Fill the value before use
+  dockerContainerRegistryRepositoryName: 'test' # TODO: Fill the value before use
 
 
 jobs:
