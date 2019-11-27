@@ -76,7 +76,7 @@ jobs:
 - job: BuildAndPushDockerImage
   displayName: 'Build Docker image and push to container registry'
   dependsOn: BuildAndTestSolutionAndPublishBuildArtifacts
-  condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/master'), not(eq('$(azureContainerRegistryServiceConnectionName)', '')), not(eq('$(azureContainerRegistryRepositoryName)', ''))) # Execute, if in master branch and ACR variables defined
+  condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/master'), not(eq('$(azureContainerRegistryRepositoryName)', ''))) # Execute, if in master branch and ACR variables defined
   steps:
   - download: current
     displayName: 'Download build artifacts'
