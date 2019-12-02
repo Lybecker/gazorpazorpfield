@@ -105,5 +105,7 @@ jobs:
       repository: '$(dockerContainerRegistryRepositoryName)/$(dockerImageName)'
       dockerfile: '$(dockerBuildContext)$(dockerfileName)'
       buildContext: '$(dockerBuildContext)'
-      tags: '$(dockerImageTag)'
+      tags: |
+        '$(dockerImageTag)'
+        latest
       addPipelineData: false
