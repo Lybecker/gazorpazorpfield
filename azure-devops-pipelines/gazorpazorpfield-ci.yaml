@@ -106,6 +106,6 @@ jobs:
       dockerfile: '$(dockerBuildContext)$(dockerfileName)'
       buildContext: '$(dockerBuildContext)'
       tags: |
-        '$(dockerImageTag)'
+        $(dockerImageTag)
         latest
       addPipelineData: false
