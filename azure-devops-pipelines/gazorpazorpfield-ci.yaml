@@ -6,8 +6,6 @@
 
 trigger:
   batch: true
-  branches:
-    - '*'
   paths:
     include:
       - '*'
