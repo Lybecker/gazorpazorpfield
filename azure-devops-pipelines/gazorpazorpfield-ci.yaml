@@ -14,6 +14,15 @@ trigger:
       - azure-devops-pipelines/*
       - README.md
 
+pr:
+  paths:
+    include:
+      - '*'
+    exclude:
+      - docs/*
+      - azure-devops-pipelines/*
+      - README.md
+
 variables:
   apiProjectName: 'CentralFiniteCurve.Gazorpazorpfield.API'
   buildConfiguration: 'Release'
