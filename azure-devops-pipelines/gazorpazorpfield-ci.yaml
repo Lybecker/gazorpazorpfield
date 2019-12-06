@@ -4,6 +4,14 @@
 # * Azure Pipelines documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/?view=azure-devops
 # * Azure Pipelines predefined variables: https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml
 
+trigger:
+  batch: true
+  paths:
+    exclude:
+      - docs/*
+      - azure-devops-pipelines/*
+      - README.md
+
 variables:
   apiProjectName: 'CentralFiniteCurve.Gazorpazorpfield.API'
   buildConfiguration: 'Release'
