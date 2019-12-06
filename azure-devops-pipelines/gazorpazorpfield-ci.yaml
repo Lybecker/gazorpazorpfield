@@ -6,7 +6,11 @@
 
 trigger:
   batch: true
+  branches:
+    - '*'
   paths:
+    include:
+      - '*'
     exclude:
       - docs/*
       - azure-devops-pipelines/*
