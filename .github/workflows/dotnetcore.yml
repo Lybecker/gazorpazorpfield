@@ -51,3 +51,4 @@ jobs:
         run: |
           docker build $DOCKERCONTEXT -f $DOCKERFILE -t $DOCKERIMAGE:$ASSEMBLY_VERSION
           docker push $DOCKERIMAGE:$ASSEMBLY_VERSION
+
