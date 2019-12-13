@@ -12,8 +12,8 @@ jobs:
     name: Compile, test & Dockerize
     runs-on: ubuntu-latest
     env:
-      BUILDPROJECTS: '**/*.csproj'
-      TESTPROJECTS: '**/*[Tt]ests/*.csproj'
+      BUILDPROJECTS: 'Gazorpazorpfield.sln'
+      TESTPROJECTS: 'Gazorpazorpfield.sln'
       PUBLISHPROJECTS: 'src/CentralFiniteCurve.Gazorpazorpfield.API/CentralFiniteCurve.Gazorpazorpfield.API.csproj'
       ASSEMBLY_VERSION: '1.0.0'
       CONFIGURATION: Release
