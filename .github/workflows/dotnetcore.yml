@@ -11,7 +11,9 @@ jobs:
     name: Compile, test & Dockerize
     runs-on: ubuntu-latest
     env:
-      PROJECTFOLDER: 'src/'
+      BUILDPROJECTS: '**/*.csproj'
+      TESTPROJECTS: '**/*[Tt]ests/*.csproj'
+      PUBLISHPROJECTS: 'src/CentralFiniteCurve.Gazorpazorpfield.API/CentralFiniteCurve.Gazorpazorpfield.API.csproj'
       ASSEMBLY_VERSION: '1.0.0'
       CONFIGURATION: Release
     steps:
@@ -21,13 +23,13 @@ jobs:
         with:
           dotnet-version: 2.2.108
       - name: dotnet restore
-        run: dotnet restore $PROJECTFOLDER
+        run: dotnet restore $BUILDPROJECTS
       - name: dotnet build
-        run: dotnet build $PROJECTFOLDER --configuration $CONFIGURATION /p:Version=$ASSEMBLY_VERSION --no-restore
+        run: dotnet build $BUILDPROJECTS --configuration $CONFIGURATION /p:Version=$ASSEMBLY_VERSION --no-restore
       - name: dotnet test
-        run: dotnet test $PROJECTFOLDER --configuration $CONFIGURATION --no-build
+        run: dotnet test $TESTPROJECTS --configuration $CONFIGURATION --no-build
       - name: dotnet publish
-        run: dotnet publish $PROJECTFOLDER --configuration $CONFIGURATION --no-build --output $GITHUB_WORKSPACE/publish/
+        run: dotnet publish $PUBLISHPROJECTS --configuration $CONFIGURATION --no-build --output $GITHUB_WORKSPACE/publish/
       - name: Upload artifact
         uses: actions/upload-artifact@v1.0.0
         with:
