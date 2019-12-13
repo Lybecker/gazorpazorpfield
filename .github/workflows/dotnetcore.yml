@@ -12,8 +12,7 @@ jobs:
     name: Compile, test & Dockerize
     runs-on: ubuntu-latest
     env:
-      BUILDPROJECTS: 'Gazorpazorpfield.sln'
-      TESTPROJECTS: 'Gazorpazorpfield.sln'
+      SOLUTIONFILE: 'Gazorpazorpfield.sln'
       PUBLISHPROJECTS: 'src/CentralFiniteCurve.Gazorpazorpfield.API/CentralFiniteCurve.Gazorpazorpfield.API.csproj'
       ASSEMBLY_VERSION: '1.0.0'
       CONFIGURATION: Release
@@ -24,17 +23,17 @@ jobs:
         with:
           dotnet-version: 3.0.101
       - name: dotnet restore
-        run: dotnet restore $BUILDPROJECTS
+        run: dotnet restore $SOLUTIONFILE
       - name: dotnet build
-        run: dotnet build $BUILDPROJECTS --configuration $CONFIGURATION /p:Version=$ASSEMBLY_VERSION --no-restore
+        run: dotnet build $SOLUTIONFILE --configuration $CONFIGURATION /p:Version=$ASSEMBLY_VERSION --no-restore
       - name: dotnet test
-        run: dotnet test $TESTPROJECTS --configuration $CONFIGURATION --no-build
+        run: dotnet test $SOLUTIONFILE --configuration $CONFIGURATION --no-build
       - name: dotnet publish
         run: dotnet publish $PUBLISHPROJECTS --configuration $CONFIGURATION --no-build --output $GITHUB_WORKSPACE/publish/
       - name: Upload artifact
         uses: actions/upload-artifact@v1.0.0
         with:
-          name: files
+          name: binaries
           path: publish/
       - name: Docker Login
         if: github.ref == 'refs/heads/master'
